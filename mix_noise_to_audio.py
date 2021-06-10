@@ -117,3 +117,8 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
                         output_filename = filename_clean.split('.')[0] + "_" + filename_noise.split('.')[0] + "_snr" + str(snr_value) + ".wav"
                         write(Path(audio_clean_dir, output_filename), sr, signal_noise)
                     processed_file_count += 1
+
+                    
+if __name__ == '__main__':
+    # args = get_args()
+    # mix_noise(args)
