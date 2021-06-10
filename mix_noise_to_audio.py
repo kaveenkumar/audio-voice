@@ -17,6 +17,17 @@ import librosa
 import numpy as np
 from scipy.io.wavfile import write
 
+
+logger = logging.getLogger('noise_mixing')
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s [%(pathname)s:%(lineno)s - "
+                              "%(funcName)s - %(levelname)s ] %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.info('Starting to mix noise to the train dataset')
+
 def mix_white_noise(signal, snr_value):
     """
     method1: add additive white gaussian noise
