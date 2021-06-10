@@ -72,10 +72,10 @@ def mix_white_noise(signal, snr_value):
 
     return signal_noise
 
+# pylint: disable=too-many-locals
 def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
     """main function that mixes noise and writes out the augmented audio"""
 
-    # for each noise file in the noise directory, load them over iterations
     for subdir_noise, _, files_noise in os.walk(external_noise_dir):
         for filename_noise in files_noise:
             processed_noise_count = 1
@@ -84,7 +84,6 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
             logger.info(f"NOISE FILE {processed_noise_count} / {files_noise_count} {filename_noise.split('.')[0]}")
             noise, _ = librosa.load(filepath_noise)
 
-            # for each clean audio in input directory, load them over iterations
             for subdir_clean, _, files_clean in os.walk(audio_clean_dir):
                 processed_file_count = 1
                 files_clean_count = len(files_clean)
@@ -97,22 +96,16 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
 
                         signal, _ = librosa.load(filepath_clean)
 
-                        # add AWGN - not utilized for skullcandy as the FF noise is negligible.. might be useful for Galanz type devices
                         if device_noise_wav:
-                            # mix device noise if provided
                             device_noise = mix_audio_noise(signal, noise, snr_value)
                         else:
-                            # mix white noise if device noise not provided
                             white_noise = mix_white_noise(signal, snr_value=50)
                             device_noise = white_noise
 
-                        # mix real world noise
                         external_noise = mix_audio_noise(signal, noise, snr_value)
 
-                        # add device noise + real world noise
                         signal_noise = device_noise + external_noise
 
-                        # export the augmented audio
                         _, sr = librosa.load(filepath_clean)
                         output_filename = filename_clean.split('.')[0] + "_" + filename_noise.split('.')[0] + "_snr" + str(snr_value) + ".wav"
                         write(Path(audio_clean_dir, output_filename), sr, signal_noise)
