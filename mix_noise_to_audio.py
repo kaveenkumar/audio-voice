@@ -153,5 +153,11 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
 
                     
 if __name__ == '__main__':
+    audio_clean_directory = sys.argv[1]
+    device_noise_file = sys.argv[2]
+    external_noise_directory = sys.argv[3]
+    snr = sys.argv[4]
+    mix_noise(audio_clean_directory, device_noise_file, external_noise_directory, snr)
+
     # args = get_args()
     # mix_noise(args)
