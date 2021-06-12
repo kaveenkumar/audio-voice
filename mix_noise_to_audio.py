@@ -38,7 +38,18 @@ def get_args():
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     conflict_handler='resolve')
 
-      
+    parser.add_argument("--input_directory", type=str, default=None,
+                        help="Choose the input directory that contains clean audio files")
+
+    parser.add_argument("--device_noise", type=str, default=None,
+                        help="Select an input wav file that contains the device internal recording")
+
+    parser.add_argument("--noise_directory", type=str, default=None,
+                        help="Choose the noise directory that contains different noise sources")
+
+    parser.add_argument("--snr", type=int, dest='snr', default=20,
+                        help="Enter an SNR value for the noise levels to be mixed")
+
     return args
 
   
