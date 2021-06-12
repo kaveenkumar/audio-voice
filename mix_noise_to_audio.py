@@ -28,6 +28,12 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.info('Starting to mix noise to the train dataset')
 
+
+def get_args():
+    """ get args from stdin"""
+    return args
+
+  
 def mix_white_noise(signal, snr_value):
     """
     method1: add additive white gaussian noise
