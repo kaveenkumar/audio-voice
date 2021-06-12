@@ -31,12 +31,12 @@ logger.info('Starting to mix noise to the train dataset')
 
 def get_args():
     """ get args from stdin"""
-    
+
     parser = argparse.ArgumentParser(
-    description="""Mix selected noise sources to the input clean audio files.
-    The amount of noise mixed to the clean audio is decided by the SNR value""",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    conflict_handler='resolve')
+        description="""Mix selected noise sources to the input clean audio files.
+        The amount of noise mixed to the clean audio is decided by the SNR value""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        conflict_handler='resolve')
 
     parser.add_argument("--input_directory", type=str, default=None,
                         help="Choose the input directory that contains clean audio files")
@@ -50,6 +50,10 @@ def get_args():
     parser.add_argument("--snr", type=int, dest='snr', default=20,
                         help="Enter an SNR value for the noise levels to be mixed")
 
+    print(' '.join(sys.argv))
+    print(sys.argv)
+
+    args = parser.parse_args()
     return args
 
   
