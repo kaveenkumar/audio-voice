@@ -21,8 +21,7 @@ logger = logging.getLogger('noise_mixing')
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setLevel(logging.INFO)
-formatter = logging.Formatter("%(asctime)s [%(pathname)s:%(lineno)s - "
-                              "%(funcName)s - %(levelname)s ] %(message)s")
+formatter = logging.Formatter("%(asctime)s; %(pathname)s; %(levelname)s | %(message)s", "%Y-%m-%d %H:%M:%S")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.info('Starting to mix noise to the train dataset')
@@ -119,8 +118,8 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
 
     # for each noise file in the noise directory, load them over iterations
     for subdir_noise, _, files_noise in os.walk(external_noise_dir):
+        processed_noise_count = 1
         for filename_noise in files_noise:
-            processed_noise_count = 1
             files_noise_count = len(files_noise)
             filepath_noise = subdir_noise + os.sep + filename_noise
             logger.info(f"NOISE FILE {processed_noise_count} / {files_noise_count} {filename_noise.split('.')[0]}")
@@ -129,17 +128,17 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
             # for each clean audio in input directory, load them over iterations
             for subdir_clean, _, files_clean in os.walk(audio_clean_dir):
                 processed_file_count = 1
-                files_clean_count = len(files_clean)
+                files_clean_count = len([file for file in files_clean if 'snr' not in file])
                 for filename_clean in files_clean:
 
                     filepath_clean = subdir_clean + os.sep + filename_clean
 
-                    if filepath_clean.endswith(".wav"):
+                    if (filepath_clean.endswith(".wav")) and ('snr' not in filepath_clean):
                         logger.info(f"{processed_file_count} / {files_clean_count} MIXING {filename_noise} FOR AUDIO {filename_clean}")
 
                         signal, _ = librosa.load(filepath_clean)
 
-                        # add AWGN
+                        # add AWGN - might be useful for devices with high internal noise
                         if device_noise_wav:
                             # mix device noise if provided
                             device_noise = mix_audio_noise(signal, noise, snr_value)
@@ -158,7 +157,8 @@ def mix_noise(audio_clean_dir, device_noise_wav, external_noise_dir, snr_value):
                         _, sr = librosa.load(filepath_clean)
                         output_filename = filename_clean.split('.')[0] + "_" + filename_noise.split('.')[0] + "_snr" + str(snr_value) + ".wav"
                         write(Path(audio_clean_dir, output_filename), sr, signal_noise)
-                    processed_file_count += 1
+                        processed_file_count += 1
+            processed_noise_count += 1
 
 
 if __name__ == '__main__':
